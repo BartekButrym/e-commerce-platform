@@ -12,16 +12,18 @@ const config = {
 	appId: "1:700497759563:web:2b88877c88a349bb1b2cce"
 };
 
+firebase.initializeApp(config);
+
 export const createUserProfileDocument = async (userAuth, additionalData) => {
 	if (!userAuth) return;
 
 	const userRef = firestore.doc(`users/${userAuth.uid}`);
+
 	const snapShot = await userRef.get();
 
 	if (!snapShot.exists) {
 		const { displayName, email } = userAuth;
 		const createdAt = new Date();
-
 		try {
 			await userRef.set({
 				displayName,
@@ -36,8 +38,6 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 
 	return userRef;
 };
-
-firebase.initializeApp(config);
 
 export const addCollectionAndDocuments = async (
 	collectionKey,
@@ -59,7 +59,7 @@ export const convertCollectionsSnapshotToMap = collections => {
 		const { title, items } = doc.data();
 
 		return {
-			routeNmame: encodeURI(title.toLowerCase()),
+			routeName: encodeURI(title.toLowerCase()),
 			id: doc.id,
 			title,
 			items
